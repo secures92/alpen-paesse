@@ -1,0 +1,11 @@
+{
+  "domain": "alpen_paesse",
+  "name": "Alpen-Paesse",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/secures92/alpen-paesse",
+  "iot_class": "cloud_polling",
+  "requirements": ["requests>=2.25.0", "beautifulsoup4>=4.11.0"],
+  "version": "1.0.0"
+}

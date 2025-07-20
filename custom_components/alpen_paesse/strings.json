@@ -1,0 +1,43 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Alpen-Paesse",
+        "description": "Configure language and select the Alpine passes you want to monitor",
+        "data": {
+          "language": "Language",
+          "selected_passes": "Select passes to monitor"
+        }
+      },
+      "reconfigure": {
+        "title": "Reconfigure Alpen-Paesse",
+        "description": "Update language and Alpine passes you want to monitor",
+        "data": {
+          "language": "Language",
+          "selected_passes": "Select passes to monitor"
+        }
+      }
+    },
+    "error": {
+      "no_passes_selected": "You must select at least one pass to monitor",
+      "unknown": "Unexpected error occurred"
+    },
+    "abort": {
+      "already_configured": "Alpen-Paesse is already configured",
+      "no_passes_selected": "You must select at least one pass to monitor",
+      "reconfigure_successful": "Configuration updated successfully"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure Alpen-Paesse",
+        "description": "Update language and Alpine passes you want to monitor",
+        "data": {
+          "language": "Language",
+          "selected_passes": "Select passes to monitor"
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 {
   "domain": "alpen_paesse",
   "name": "Alpen-Paesse",
-  "codeowners": [],
+  "codeowners": ["secures92"],
   "config_flow": true,
   "dependencies": [],
   "documentation": "https://github.com/secures92/alpen-paesse",

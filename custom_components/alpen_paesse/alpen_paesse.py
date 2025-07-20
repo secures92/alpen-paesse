@@ -1,15 +1,3 @@
-#!/usr/bin/env python3
-"""
-Swiss Alpine Pass Information Library
-
-A simple Python library for scraping and representing Swiss alpine pass data
-from alpen-paesse.ch. This library provides a clean API to fetch current
-status, temperature, and other information about Swiss mountain passes.
-
-Author: Generated for alpen-paesse.ch integration
-Date: July 2025
-"""
-
 import re
 import requests
 from datetime import datetime

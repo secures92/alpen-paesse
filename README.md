@@ -4,40 +4,15 @@ A Home Assistant custom integration that monitors Swiss Alpine pass conditions f
 
 ## Features
 
-- **21 Swiss Alpine Passes Supported**: Monitor conditions for major Alpine passes including Gotthardpass, Furkapass, Grimselpass, and many more
+- **Swiss Alpine Passes Supported**: Monitor conditions for major Alpine passes including Gotthardpass, Furkapass, Grimselpass, and many more
 - **Three Sensors Per Pass**: 
-  - Status (open/closed/restrictions in exact German wording)
+  - Status
   - Temperature (°C)
-  - Last Update (timestamp)
+  - Last Update
 - **Configurable Pass Selection**: Choose which passes to monitor through the Home Assistant UI
 - **Device Grouping**: Each pass appears as a separate device with its three sensors
 - **Hourly Updates**: Automatically fetches fresh data every 60 minutes
 - **Proper Error Handling**: Graceful handling of network issues and parsing errors
-
-## Supported Alpine Passes
-
-- Albulapass (Preda - La Punt Chamues-ch)
-- Berninapass (Pontresina - San Carlo)
-- Brünigpass (Lungern - Brienzwiler)
-- Flüelapass (Tschuggen - Susch)
-- Furkapass (Realp - Oberwald)
-- Forcola di Livigno (La Motta - Landesgrenze)
-- Glaubenbergpass (Sarnen - Entlebuch)
-- Glaubenbielenpass (Giswil - Sörenberg)
-- Gotthardpass (Göschenen - Airolo)
-- Grimselpass (Innertkirchen - Oberwald)
-- Grosser St. Bernhard (Bourg-Saint-Pierre - Landesgrenze)
-- Julierpass (Tiefencastel - Silvaplana)
-- Klausenpass (Altdorf - Linthal)
-- Lukmanierpass (Disentis - Biasca)
-- Malojapass (Silvaplana - Chiavenna)
-- Nufenenpass (Ulrichen - Airolo)
-- Oberalppass (Andermatt - Disentis)
-- San Bernardino (Splügen - Bellinzona)
-- Simplon (Brig - Domodossola)
-- Splügenpass (Thusis - Chiavenna)
-- Sustenpass (Innertkirchen - Wassen)
-- Umbrailpass (Sta. Maria - Bormio)
 
 ## Installation
 
@@ -70,11 +45,6 @@ For Splügenpass, the integration creates:
 - **Error Handling**: Continues operating if some passes are temporarily unavailable
 - **Concurrent Requests**: Limited to 3 simultaneous requests to respect the website
 
-## Dependencies
-
-- aiohttp >= 3.8.0
-- beautifulsoup4 >= 4.11.0
-- voluptuous (included with Home Assistant)
 
 ## Development
 
@@ -84,12 +54,3 @@ The integration follows Home Assistant development standards:
 - Proper device and entity structure
 - Comprehensive error handling and logging
 
-## Data Example
-
-```
-Status: "Offen, normal befahrbar"
-Temperature: 13.0°C
-Last Update: 2025-06-29T14:14:00
-```
-
-The integration preserves the exact German status text from the website (e.g., "Offen, normal befahrbar", "Gesperrt", "Wintersperre") for accurate condition reporting.

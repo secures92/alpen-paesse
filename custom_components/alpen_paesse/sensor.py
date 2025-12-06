@@ -75,8 +75,34 @@ class AlpenPassSensorBase(CoordinatorEntity[AlpenPasseCoordinator], SensorEntity
         """Return if entity is available."""
         return (
             self.coordinator.last_update_success 
+            and self.coordinator.data is not None
             and self.pass_key in self.coordinator.data
         )
+    
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return additional state attributes with all scraped data."""
+        attrs = {
+            "pass_key": self.pass_key,
+        }
+        
+        # Add all scraped data to attributes when available
+        if self.coordinator.data and self.pass_key in self.coordinator.data:
+            pass_data = self.coordinator.data[self.pass_key]
+            attrs.update({
+                "name": pass_data.get("name"),
+                "status": pass_data.get("status"),
+                "temperature": pass_data.get("temperature"),
+                "last_update": pass_data.get("last_update"),
+                "route": pass_data.get("route"),
+                "notes": pass_data.get("notes"),
+            })
+        else:
+            # Fallback to config values when scraped data is not available
+            attrs["name"] = self.pass_info["name"]
+            attrs["route"] = self.pass_info["route"]
+        
+        return attrs
 
 
 class AlpenPassStatusSensor(AlpenPassSensorBase):
@@ -97,17 +123,9 @@ class AlpenPassStatusSensor(AlpenPassSensorBase):
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        if self.pass_key not in self.coordinator.data:
+        if not self.coordinator.data or self.pass_key not in self.coordinator.data:
             return None
         return self.coordinator.data[self.pass_key].get("status")
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return additional state attributes."""
-        return {
-            "route": self.pass_info["route"],
-            "pass_key": self.pass_key,
-        }
 
 
 class AlpenPassTemperatureSensor(AlpenPassSensorBase):
@@ -131,17 +149,9 @@ class AlpenPassTemperatureSensor(AlpenPassSensorBase):
     @property
     def native_value(self) -> float | None:
         """Return the native value of the sensor."""
-        if self.pass_key not in self.coordinator.data:
+        if not self.coordinator.data or self.pass_key not in self.coordinator.data:
             return None
         return self.coordinator.data[self.pass_key].get("temperature")
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return additional state attributes."""
-        return {
-            "route": self.pass_info["route"],
-            "pass_key": self.pass_key,
-        }
 
 
 class AlpenPassLastUpdateSensor(AlpenPassSensorBase):
@@ -163,16 +173,8 @@ class AlpenPassLastUpdateSensor(AlpenPassSensorBase):
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
-        if self.pass_key not in self.coordinator.data:
+        if not self.coordinator.data or self.pass_key not in self.coordinator.data:
             return None
         
         # Return the raw timestamp string as provided by the website
         return self.coordinator.data[self.pass_key].get("last_update")
-
-    @property
-    def extra_state_attributes(self) -> dict[str, Any]:
-        """Return additional state attributes."""
-        return {
-            "route": self.pass_info["route"],
-            "pass_key": self.pass_key,
-        }

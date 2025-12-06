@@ -59,7 +59,7 @@ class AlpinePass:
         status_lower = self.status.lower()
         return any(keyword in status_lower for keyword in [
             'restriction', 'chain', 'winter', 'snow', 'closed',
-            'einschränkung', 'ketten', 'winter', 'schnee', 'gesperrt'
+            'einschränkung', 'ketten', 'schnee', 'gesperrt'
         ])
 
 

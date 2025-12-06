@@ -1,5 +1,6 @@
 import re
 import requests
+import traceback
 from datetime import datetime
 from typing import List, Optional, Dict, Any
 from dataclasses import dataclass
@@ -343,7 +344,6 @@ class AlpenPasseScraper:
             
         except Exception as e:
             logger.error(f"Error parsing pass section: {e}")
-            import traceback
             logger.debug(f"Traceback: {traceback.format_exc()}")
             return None
     
@@ -417,7 +417,6 @@ class AlpenPasseScraper:
             
         except Exception as e:
             logger.error(f"Error parsing main page: {e}")
-            import traceback
             logger.debug(f"Traceback: {traceback.format_exc()}")
             return []
     

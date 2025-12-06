@@ -98,7 +98,8 @@ class AlpenPassSensorBase(CoordinatorEntity[AlpenPasseCoordinator], SensorEntity
                 "notes": pass_data.get("notes"),
             })
         else:
-            # Fallback to config route when scraped data is not available
+            # Fallback to config values when scraped data is not available
+            attrs["name"] = self.pass_info["name"]
             attrs["route"] = self.pass_info["route"]
         
         return attrs

@@ -2,16 +2,10 @@
 from __future__ import annotations
 
 import logging
-# Remove datetime import since we're using string timestamps
 from typing import Any
 
-from homeassistant.components.sensor import (
-    SensorDeviceClass,
-    SensorEntity,
-    SensorStateClass,
-)
+from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfTemperature
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -35,11 +29,12 @@ async def async_setup_entry(
         if pass_key in AVAILABLE_PASSES:
             pass_info = AVAILABLE_PASSES[pass_key]
             
-            # Create three sensors for each pass
+            # Create four sensors for each pass: status, update, temperature, link
             entities.extend([
                 AlpenPassStatusSensor(coordinator, pass_key, pass_info),
+                AlpenPassUpdateSensor(coordinator, pass_key, pass_info),
                 AlpenPassTemperatureSensor(coordinator, pass_key, pass_info),
-                AlpenPassLastUpdateSensor(coordinator, pass_key, pass_info),
+                AlpenPassLinkSensor(coordinator, pass_key, pass_info),
             ])
     
     async_add_entities(entities, update_before_add=True)
@@ -110,6 +105,37 @@ class AlpenPassStatusSensor(AlpenPassSensorBase):
         }
 
 
+class AlpenPassUpdateSensor(AlpenPassSensorBase):
+    """Representation of an Alpine Pass Last Update Sensor."""
+    
+    def __init__(
+        self, 
+        coordinator: AlpenPasseCoordinator, 
+        pass_key: str, 
+        pass_info: dict[str, Any]
+    ) -> None:
+        """Initialize the last update sensor."""
+        super().__init__(coordinator, pass_key, pass_info)
+        self._attr_name = f"{pass_info['name']} Update"
+        self._attr_unique_id = f"{pass_key}_update"
+        self._attr_icon = "mdi:clock-check-outline"
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the native value of the sensor."""
+        if self.pass_key not in self.coordinator.data:
+            return None
+        return self.coordinator.data[self.pass_key].get("update")
+
+    @property
+    def extra_state_attributes(self) -> dict[str, Any]:
+        """Return additional state attributes."""
+        return {
+            "route": self.pass_info["route"],
+            "pass_key": self.pass_key,
+        }
+
+
 class AlpenPassTemperatureSensor(AlpenPassSensorBase):
     """Representation of an Alpine Pass Temperature Sensor."""
     
@@ -123,16 +149,14 @@ class AlpenPassTemperatureSensor(AlpenPassSensorBase):
         super().__init__(coordinator, pass_key, pass_info)
         self._attr_name = f"{pass_info['name']} Temperature"
         self._attr_unique_id = f"{pass_key}_temperature"
-        self._attr_native_unit_of_measurement = UnitOfTemperature.CELSIUS
-        self._attr_device_class = SensorDeviceClass.TEMPERATURE
-        self._attr_state_class = SensorStateClass.MEASUREMENT
         self._attr_icon = "mdi:thermometer"
 
     @property
-    def native_value(self) -> float | None:
+    def native_value(self) -> str | None:
         """Return the native value of the sensor."""
         if self.pass_key not in self.coordinator.data:
             return None
+        # Return temperature as-is (it's already a string from the website)
         return self.coordinator.data[self.pass_key].get("temperature")
 
     @property
@@ -144,8 +168,8 @@ class AlpenPassTemperatureSensor(AlpenPassSensorBase):
         }
 
 
-class AlpenPassLastUpdateSensor(AlpenPassSensorBase):
-    """Representation of an Alpine Pass Last Update Sensor."""
+class AlpenPassLinkSensor(AlpenPassSensorBase):
+    """Representation of an Alpine Pass Detail Link Sensor."""
     
     def __init__(
         self, 
@@ -153,21 +177,18 @@ class AlpenPassLastUpdateSensor(AlpenPassSensorBase):
         pass_key: str, 
         pass_info: dict[str, Any]
     ) -> None:
-        """Initialize the last update sensor."""
+        """Initialize the link sensor."""
         super().__init__(coordinator, pass_key, pass_info)
-        self._attr_name = f"{pass_info['name']} Last Update"
-        self._attr_unique_id = f"{pass_key}_last_update"
-        # Remove timestamp device class since we're using raw string
-        self._attr_icon = "mdi:clock-check-outline"
+        self._attr_name = f"{pass_info['name']} Link"
+        self._attr_unique_id = f"{pass_key}_link"
+        self._attr_icon = "mdi:link-variant"
 
     @property
     def native_value(self) -> str | None:
         """Return the native value of the sensor."""
         if self.pass_key not in self.coordinator.data:
             return None
-        
-        # Return the raw timestamp string as provided by the website
-        return self.coordinator.data[self.pass_key].get("last_update")
+        return self.coordinator.data[self.pass_key].get("link")
 
     @property
     def extra_state_attributes(self) -> dict[str, Any]:

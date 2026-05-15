@@ -47,25 +47,35 @@ class AlpenPaesseFetcher:
             return None  # Skip if no pass name is found
 
         # 2. Status and Last Update
-        status_badge = element.select_one(
-            '.pass-card-row:nth-child(1) > .pass-card-badge:nth-child(1) .pass-card-badge-text')
-        if status_badge:
-            data['current_status_description'] = status_badge.select_one(
-                'div:nth-child(1)').text.strip() if status_badge.select_one('div:nth-child(1)') else ''
-
-            last_update_el = status_badge.select_one(
-                '.pass-card-badge-text-clamp-1')
-            if last_update_el:
-                # Clean up the prefix "Unverändert gültig seit::"
-                data['status_last_update'] = last_update_el.text.replace(
-                    'Unverändert gültig seit::', '').strip()
+        # Find the first pass-card-row
+        first_row = element.select_one('.pass-card-row')
+        if first_row:
+            # Get status from first badge
+            status_badge = first_row.select_one('.pass-card-badge:nth-child(1) .pass-card-badge-text')
+            if status_badge:
+                # Status is in the first div child
+                status_div = status_badge.select_one('div:first-child')
+                data['current_status_description'] = status_div.text.strip() if status_div else ''
+                
+                # Last update is in the div with class pass-card-badge-text-clamp-1
+                last_update_el = status_badge.select_one('.pass-card-badge-text-clamp-1')
+                if last_update_el:
+                    # Clean up the prefix "Unverändert gültig seit::"
+                    data['status_last_update'] = last_update_el.text.replace(
+                        'Unverändert gültig seit::', '').strip()
+                else:
+                    data['status_last_update'] = ''
             else:
+                data['current_status_description'] = ''
                 data['status_last_update'] = ''
-
-        # 3. Weather/Temperature
-        temp_el = element.select_one(
-            '.pass-card-row:nth-child(1) > .pass-card-badge:nth-child(2) .pass-card-badge-text')
-        data['temperature'] = temp_el.text.strip() if temp_el else ''
+            
+            # Get temperature from second badge
+            temp_badge = first_row.select_one('.pass-card-badge:nth-child(2) .pass-card-badge-text')
+            data['temperature'] = temp_badge.text.strip() if temp_badge else ''
+        else:
+            data['current_status_description'] = ''
+            data['status_last_update'] = ''
+            data['temperature'] = ''
 
 
         return data
